@@ -2,9 +2,9 @@ import matplotlib.pyplot as plt
 import dhnx
 import pandas as pd
 import seaborn as sns
-import contextily as ctx
 import matplotlib.patheffects as pe
 from matplotlib.collections import LineCollection
+import contextily as ctx
 from adjustText import adjust_text
 
 
@@ -16,41 +16,41 @@ def plot_dhn_map(network,
                  add_basemap=True,
                  debug=False):
 
-    # --------------------------------------------------------------
-    # Helper: get node coordinates from components using ID
-    # --------------------------------------------------------------
-    def get_node_coords(net, node_name):
+    # # --------------------------------------------------------------
+    # # Helper: get node coordinates from components using ID
+    # # --------------------------------------------------------------
+    # def get_node_coords(net, node_name):
 
-        if not isinstance(node_name, str) or "-" not in node_name:
-            return None, None
+    #     if not isinstance(node_name, str) or "-" not in node_name:
+    #         return None, None
 
-        comp_name, id_str = node_name.split("-", 1)
-        comp = getattr(net.components, comp_name, None)
-        if comp is None:
-            if debug:
-                print(f"[get_node_coords] No component table '{comp_name}'")
-            return None, None
+    #     comp_name, id_str = node_name.split("-", 1)
+    #     comp = getattr(net.components, comp_name, None)
+    #     if comp is None:
+    #         if debug:
+    #             print(f"[get_node_coords] No component table '{comp_name}'")
+    #         return None, None
 
-        if "id" not in comp.columns or "lon" not in comp.columns or "lat" not in comp.columns:
-            if debug:
-                print(f"[get_node_coords] Component '{comp_name}' has no id/lon/lat columns")
-            return None, None
+    #     if "id" not in comp.columns or "lon" not in comp.columns or "lat" not in comp.columns:
+    #         if debug:
+    #             print(f"[get_node_coords] Component '{comp_name}' has no id/lon/lat columns")
+    #         return None, None
 
-        try:
-            node_id = int(id_str)
-        except ValueError:
-            if debug:
-                print(f"[get_node_coords] Cannot parse id from '{node_name}'")
-            return None, None
+    #     try:
+    #         node_id = int(id_str)
+    #     except ValueError:
+    #         if debug:
+    #             print(f"[get_node_coords] Cannot parse id from '{node_name}'")
+    #         return None, None
 
-        row = comp.loc[comp["id"] == node_id]
-        if row.empty:
-            if debug:
-                print(f"[get_node_coords] No row in '{comp_name}' with id={node_id}")
-            return None, None
+    #     row = comp.loc[comp["id"] == node_id]
+    #     if row.empty:
+    #         if debug:
+    #             print(f"[get_node_coords] No row in '{comp_name}' with id={node_id}")
+    #         return None, None
 
-        row = row.iloc[0]
-        return float(row["lon"]), float(row["lat"])
+    #     row = row.iloc[0]
+    #     return float(row["lon"]), float(row["lat"])
 
     # ------------------------------------------------------------------
     # Base map from DHNx
@@ -60,7 +60,7 @@ def plot_dhn_map(network,
     fig, ax = static_map.draw(background_map=False)
 
     text_objs = []   # all text for adjustText
-    text_pe = [pe.withStroke(linewidth=4, foreground="white")]
+    text_pe = [pe.withStroke(linewidth=2, foreground="white")]
 
     # ------------------------------------------------------------------
     # Style the network pipes & collect their segments
@@ -301,7 +301,7 @@ def plot_dhn_map(network,
             if cap is not None and not pd.isna(cap):
                 parts.append(f"{cap:.0f} kW")
             if loss is not None and not pd.isna(loss):
-                parts.append(f"losses {loss:.2f} kW")
+                parts.append(f"los {loss:.2f} kW")
 
             if not parts:
                 continue
@@ -344,7 +344,7 @@ def plot_dhn_map(network,
     adjust_text(
         text_objs,
         ax=ax,
-        arrowprops=dict(arrowstyle="-", lw=1.5, color="gray", alpha=1),
+        arrowprops=dict(arrowstyle="-", lw=2, color="gray", alpha=1),
         only_move={"text": "xy"},
     )
 
